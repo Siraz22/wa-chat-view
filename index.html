@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chat Restore — WhatsApp export viewer</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="landing" class="landing">
+  <div class="landing-card">
+    <h1>Chat Restore</h1>
+    <p class="tag">Open a WhatsApp export and read it back the way it was.</p>
+
+    <label id="drop" class="drop" for="picker">
+      <div class="drop-icon">＋</div>
+      <div class="drop-title">Drop your export here</div>
+      <div class="drop-sub">or tap to choose a file</div>
+      <input id="picker" type="file" accept=".zip,.txt,application/zip,text/plain" multiple hidden>
+    </label>
+
+    <div class="alt">
+      <button id="pickFolder" class="link-btn" type="button">Choose an unzipped folder instead</button>
+      <input id="folderPicker" type="file" webkitdirectory directory multiple hidden>
+    </div>
+
+    <p id="landingErr" class="err" hidden></p>
+
+    <div class="privacy">
+      <strong>Nothing is uploaded.</strong> The file is opened inside this browser tab and never
+      leaves the device — there is no server, no account, nothing stored anywhere.
+    </div>
+
+    <details class="how">
+      <summary>How to export a chat</summary>
+      <p><b>iPhone:</b> open the chat → tap the contact name at the top → scroll down →
+        <i>Export Chat</i> → <i>Attach Media</i> → Save to Files. You get one <code>.zip</code>.</p>
+      <p><b>Android:</b> open the chat → ⋮ menu → <i>More</i> → <i>Export chat</i> →
+        <i>Include media</i> → save it. You get one <code>.zip</code>.</p>
+      <p>Give this page the whole <code>.zip</code> — photos, videos and voice notes come with it.
+        A bare <code>.txt</code> works too, just without media.</p>
+    </details>
+  </div>
+</div>
+
+<div id="app" class="app" hidden>
+  <header class="topbar">
+    <button id="back" class="icon-btn" title="Open another chat" type="button">←</button>
+    <div class="title-wrap">
+      <div id="chatTitle" class="chat-title">Chat</div>
+      <div id="chatSub" class="chat-sub"></div>
+    </div>
+    <button id="searchBtn" class="icon-btn" title="Search" type="button">🔍</button>
+    <button id="menuBtn" class="icon-btn" title="Options" type="button">⋮</button>
+  </header>
+
+  <div id="searchBar" class="searchbar" hidden>
+    <input id="searchInput" type="search" placeholder="Search messages…" autocomplete="off">
+    <span id="searchCount" class="search-count"></span>
+    <button id="searchPrev" class="icon-btn" type="button" title="Previous">▲</button>
+    <button id="searchNext" class="icon-btn" type="button" title="Next">▼</button>
+    <button id="searchClose" class="icon-btn" type="button" title="Close">✕</button>
+  </div>
+
+  <div id="menu" class="menu" hidden>
+    <label class="menu-row">
+      <span>Show as me</span>
+      <select id="mePicker"></select>
+    </label>
+    <label class="menu-row">
+      <span>Jump to date</span>
+      <input id="datePicker" type="date">
+    </label>
+    <button id="toTop" class="menu-btn" type="button">Go to the very first message</button>
+    <button id="toBottom" class="menu-btn" type="button">Go to the last message</button>
+    <label class="menu-row">
+      <span>Theme</span>
+      <select id="themePicker">
+        <option value="auto">Match device</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </label>
+    <div id="stats" class="stats"></div>
+  </div>
+
+  <main id="scroller" class="scroller">
+    <div class="pill-wrap"><span id="datePill" class="date-pill"></span></div>
+    <div id="loadTop" class="load-more" hidden>Loading earlier messages…</div>
+    <div id="list" class="list"></div>
+    <div id="loadBottom" class="load-more" hidden>Loading…</div>
+  </main>
+
+  <div id="jumpBottom" class="jump-bottom" hidden>▼</div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="zip.js"></script>
+<script src="parser.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
