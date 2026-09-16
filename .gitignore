@@ -1,0 +1,7 @@
+# Never commit chat data. The repo is public; the conversations are not.
+*.zip
+*.txt
+!README.txt
+WhatsApp*/
+media/
+.DS_Store
