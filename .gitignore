@@ -5,3 +5,8 @@
 WhatsApp*/
 media/
 .DS_Store
+
+# tests
+node_modules/
+test/fixtures/
+test/*.png
