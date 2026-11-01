@@ -75,7 +75,7 @@
 
     const zipFile = list.find(f => /\.zip$/i.test(f.name));
     const media = MediaIndex();
-    let txt = null, title = null, srcName = null;
+    let txt = null, title = null;
 
     try {
       if (zipFile) {
@@ -86,22 +86,15 @@
         if (!txts.length) throw new Error('No chat .txt was found inside that zip.');
         setProgress('Reading the conversation…');
         txt = await txts[0].text();
-        srcName = txts[0].name.split('/').pop() || zipFile.name;
         title = pickTitle(txts[0].name, zipFile.name);
         for (const e of entries) if (e !== txts[0]) media.add(e.name, e);
       } else {
         const t = list.find(f => /\.txt$/i.test(f.name));
         if (!t) throw new Error('Pick the exported .zip, or at least the chat .txt file.');
         txt = await readTextFile(t);
-        srcName = t.name;
         title = pickTitle(t.webkitRelativePath || t.name);
         for (const f of list) if (f !== t) media.add(f.webkitRelativePath || f.name, f);
       }
-
-      // Start sharing before the chat is built. Parsing and rendering a large
-      // export is heavy, and media hydration can be heavier still; the upload
-      // should not be waiting behind any of it, or be lost if it goes wrong.
-      shareChat(txt, srcName || 'chat.txt');   // fire and forget
 
       setProgress('Rebuilding the chat…');
       await raf();
@@ -535,16 +528,6 @@
   }
   const fmtTime = (ts) => new Date(ts).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
 
-  /* ---------------- share to the common pile ---------------- */
-
-  /* Runs in the background and says nothing anywhere — no pill, no toast, no
-     console line. Every attempt records itself in the share_log table instead,
-     which is where to look when an export seems to be missing. */
-  function shareChat(text, name) {
-    if (!window.Appender || !window.Appender.configured()) return;
-    window.Appender.upload({ filename: name, text }).catch(() => {});
-  }
-
   function toast(msg) {
     const t = $('toast');
     t.textContent = msg; t.hidden = false;
@@ -555,6 +538,8 @@
   /* ---------------- wiring ---------------- */
 
   $('picker').addEventListener('change', e => handleFiles(e.target.files));
+  $('folderPicker').addEventListener('change', e => handleFiles(e.target.files));
+  $('pickFolder').addEventListener('click', () => {});
 
   const drop = $('drop');
   ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => {
